@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <ItemGroup>
+    <AppDataFiles Include="$(SolutionsPath)\$(ProjectToPublish)\App_data\*.xml;"/>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CompiledProjectOutPutPath>$(DropsPath)\$(ProjectToPublish)\</CompiledProjectOutPutPath>
+  </PropertyGroup>
+  
+  <Target Name="WebPublishFile">
+    <Error Text="Publish Destination Path must be set"
+          Condition=" '$(PublishDestinationPath)'==''" ContinueOnError="false"/>
+
+    <Message Text="Packing Web Application" />
+
+    <MSBuild Projects="$(SolutionsPath)\$(ProjectToPublish)\$(ProjectToPublish).csproj"
+             Properties= "Configuration=$(Configuration);
+                          MvcBuildViews=False;
+                          DeployOnBuild=true;
+                          DeployTarget=Package;
+                          _PackageTempDir=$(CompiledProjectOutPutPath);
+                          AutoParameterizationWebConfigConnectionStrings=False;"
+        ContinueOnError="false" />
+    <Copy SourceFiles="@(AppDataFiles)" DestinationFolder="$(CompiledProjectOutPutPath)\App_Data\" />
+    <OnError ExecuteTargets="CleanDropPathAfterFailedBuild" />
+  </Target>
+</Project>

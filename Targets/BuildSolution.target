@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+
+  <Choose>
+    <When Condition=" '$(BuildProjectPattern)'=='All'">
+      <ItemGroup>
+        <SolutionsToBuild Include="$(SolutionsPath)\**\*.csproj"/>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(BuildProjectPattern)'==''">
+      <ItemGroup>
+        <SolutionsToBuild Include="$(SolutionsPath)\**\*.csproj"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <SolutionsToBuild Include="$(SolutionsPath)\**\$(BuildProjectPattern)*.csproj"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+
+
+  <Target Name="BuildSolution">
+    <Message Text="SolutionsToBuild: @(SolutionsToBuild)" />
+    <MSBuild Projects="@(SolutionsToBuild)" Targets="Clean;Build;" Properties="Configuration=$(Configuration)" ContinueOnError="false"/>
+    
+  </Target>
+
+</Project>

@@ -1,0 +1,6 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <!-- Import Project Properties -->
+  <Import Project="$(TargetsPath)\WebPublish.target" />
+  <Import Project="$(TargetsPath)\WebPublishFile.target" />
+  <Import Project="$(TargetsPath)\WebPackage.target" />
+</Project>

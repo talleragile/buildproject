@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <UnitTestFiles Include="$(SolutionsPath)\**\bin\**\*.Unit.Test.*"/>
+  </ItemGroup>
+  
+  <Target Name="BeforeBuild">
+    <Error Text="the PROJECTPATH must be set"
+           Condition=" '$(Projectpath)'==''"/>
+    <Error Text="the PROJECTTOPUBLISH must be set"
+           Condition=" '$(ProjectToPublish)'==''"/>
+
+    <Message Text="SlowCheetah Tools Path: $(SlowCheetahToolsPath)"/>
+    <Message Text="SlowCheetah Targets Library: $(SlowCheetahTargets)"/>
+    
+    <Delete Files="@(UnitTestFiles)"/>
+    <Delete Files="$(DropsPath)\**\*"/>
+    <Delete Files="$(SolutionsPath)\**\bin\**\*.*"/>
+    <Delete Files="$(SolutionsPath)\**\obj\**\*.*"/>
+    <RemoveDir Directories="$(DropsPath)" />
+    <MakeDir Directories="$(DropsPath)\"/>
+    
+  </Target>
+
+  <Target Name="BeforeSonar">
+    <Error Text="the PROJECTPATH must be set"
+           Condition=" '$(Projectpath)'==''"/>
+    <Error Text="the PROJECTTOPUBLISH must be set"
+           Condition=" '$(ProjectToPublish)'==''"/>
+
+    <Delete Files="$(SolutionsPath)\**\bin\**\*.*"/>
+    <Delete Files="$(SolutionsPath)\**\obj\**\*.*"/>
+    <MakeDir Directories="$(DropsPath)\" Condition="!Exists($(DropsPath))"/>
+  </Target>
+  
+</Project>

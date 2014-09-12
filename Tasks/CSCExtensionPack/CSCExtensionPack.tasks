@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <PropertyGroup>
+    <!--Edit this property in order to use in our CI build project-->
+    <CSCExtensionTasksPath>$(TasksPath)\CSCExtensionPack\</CSCExtensionTasksPath>
+  </PropertyGroup>
+
+  <!-- ============== Crm ============== -->
+  <UsingTask AssemblyFile="$(CSCExtensionTasksPath)CSCExtensionPack.dll" TaskName="CSCExtensionPack.Versioning.GetVersionFromRevision"/>
+</Project>
+

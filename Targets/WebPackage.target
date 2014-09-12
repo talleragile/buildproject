@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+  <Target Name="WebPackage">
+    <Error Text="Publish Destination Path must be set"
+          Condition=" '$(PublishDestinationPath)'==''" ContinueOnError="false"/>
+
+    <ItemGroup>
+      <WebAppFiles Include="$(DropsPath)\$(ProjectToPublish)\**\*.*;"/>
+    </ItemGroup>
+    <Message Text="Publishing Web Application" />
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(DropsPath)\$(ProjectToPublish)" Destination="$(PublishDestinationPath)" Files="*.*" Options="/MIR">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(DropsPath)\$(ProjectToPublish)" Destination="$(PublishDestinationPathContingency)" Files="*.*" Options="/MIR"  Condition="'$(PublishDestinationPathContingency)'!=''">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+    <Message Text="Packing Web Application" />
+
+    <Zip ZipFileName="$(DropsPath)\$(ProjectToPublish).zip"
+         Files="@(WebAppFiles)"
+         WorkingDirectory="$(DropsPath)\$(ProjectToPublish)\"
+         Flatten ="false"
+         ZipLevel="10"/>
+
+    <Delete Files="$(DropsPath)\$(ProjectToPublish)\**\*.*"/>
+    <RemoveDir Directories="$(DropsPath)\$(ProjectToPublish)" />
+  </Target>
+
+</Project>
+
+
+
+

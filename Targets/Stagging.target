@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+  <ItemGroup>
+    <ConfigFiles Include="$(CompiledProjectOutPutPath)\**\*.config;
+                          $(CompiledProjectOutPutPath)\**\*.job;"
+                Exclude="$(CompiledProjectOutPutPath)\**\ConnectionStrings.*"/>
+  </ItemGroup>
+
+  <Target Name="Stagging">
+    <Error Text="Stagging Destination Folder must be set"
+          Condition=" '$(PublishDestinationPath)'==''" ContinueOnError="false"/>
+
+    <Message Text="Preparing the package..."/>
+    <MakeDir Directories="$(DropsPath)\$(ProjectToPublish)_Stagging"/>
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(UATLastReleaseFiles)" Destination="$(DropsPath)\$(ProjectToPublish)_Stagging" Files="*.*" Options="/MIR">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+    <Copy SourceFiles="@(ConfigFiles)" DestinationFiles="@(ConfigFiles->'$(DropsPath)\$(ProjectToPublish)_Stagging\%(RecursiveDir)%(Filename)%(Extension)')"  />
+
+    <ItemGroup>
+      <StaggedFiles Include="$(DropsPath)\$(ProjectToPublish)_Stagging\**\*.*"/>
+    </ItemGroup>
+
+    <Message Text="Stagging Application" />
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(DropsPath)\$(ProjectToPublish)_Stagging" Destination="$(PublishDestinationPath)" Files="*.*" Options="/MIR">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+
+    <Message Text="Packing Stagged Files to publish artifacts" />
+    <Zip ZipFileName="$(DropsPath)\$(ProjectToPublish).zip"
+         Files="@(StaggedFiles)"
+         WorkingDirectory="$(DropsPath)\$(ProjectToPublish)_Stagging\"
+         Flatten ="false"
+         ZipLevel="10"/>
+
+    <Delete Files="$(DropsPath)\$(ProjectToPublish)\**\*.*"/>
+    <Delete Files="$(DropsPath)\$(ProjectToPublish)_Stagging\**\*.*"/>
+    <RemoveDir Directories="$(DropsPath)\$(ProjectToPublish)" />
+    <RemoveDir Directories="$(DropsPath)\$(ProjectToPublish)_Stagging" />
+    <Message Text="Stagging Finished" />
+  </Target>
+
+</Project>
+

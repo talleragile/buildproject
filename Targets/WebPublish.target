@@ -1,0 +1,23 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+
+  <Target Name="WebPublish">
+    <MSBuild Projects="$(SolutionsPath)\$(ProjectToPublish)\$(ProjectToPublish).csproj"
+             Properties= "Configuration=$(Configuration);
+                          MvcBuildViews=False;
+                          DeployOnBuild=true;
+                          DeployTarget=MSDeployPublish;
+                          CreatePackageOnPublish=True;
+                          AllowUntrustedCertificate=True;
+                          MSDeployPublishMethod=WMSVC;
+                          MsDeployServiceUrl=$(IisDeployServiceUrl);
+                          DeployIisAppPath=$(WebAppIisPath);
+                          SkipExtraFilesOnServer=True;
+                          UserName=$(MsDeployUserName);
+                          Password=$(MsDeployPassword);"
+        ContinueOnError="false">
+    </MSBuild>
+   
+    
+  </Target>
+</Project>

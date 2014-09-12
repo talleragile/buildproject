@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Choose>
+    <When Condition=" '$(Configuration)'=='Debug'">
+      <PropertyGroup>
+        <SonarRunnerPath>$(SonarToolsPath)\DEV</SonarRunnerPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <SonarRunnerPath>$(SonarToolsPath)\PROD</SonarRunnerPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <ItemGroup>
+    <UnitTestFiles Include="$(SolutionsPath)\**\bin\**\*.Tests.*;
+                            $(SolutionsPath)\**\bin\**\*.Test.*;
+                            $(SolutionsPath)\**\bin\**\*Test.*;
+                            $(SolutionsPath)\**\bin\**\*Test.*;"/>
+  </ItemGroup>
+
+  <Target Name="SonarAnalysis" Condition="'$(VCS_Branch_Revision)'!=''">
+
+    <CSCEXtensionPack.Versioning.GetVerSionFromRevision VCSRevision="$(VCS_Branch_Revision)"  MajorVersion="$(CSCAssemblyMajorVersion)" MinorVersion="$(CSCAssemblyMinorVersion)">
+      <Output TaskParameter="AssemblyMajorVersion" PropertyName="myAssemblyMajorVersion"/>
+      <Output TaskParameter="AssemblyMinorVersion" PropertyName="myAssemblyMinorVersion"/>
+      <Output TaskParameter="AssemblyBuildNumber" PropertyName="myAssemblyBuildNumber"/>
+      <Output TaskParameter="AssemblyRevision" PropertyName="myAssemblyRevision"/>
+    </CSCEXtensionPack.Versioning.GetVerSionFromRevision>
+
+    <PropertyGroup>
+      <CSCAssemblyMajorVersion Condition="'$(CSCAssemblyMajorVersion)'==''">$(myAssemblyMajorVersion)</CSCAssemblyMajorVersion>
+      <CSCAssemblyMinorVersion Condition="'$(CSCAssemblyMinorVersion)'==''">$(myAssemblyMinorVersion)</CSCAssemblyMinorVersion>
+      <CSCAssemblyBuildNumber Condition="'$(CSCAssemblyBuildNumber)'==''">$(myAssemblyBuildNumber)</CSCAssemblyBuildNumber>
+      <CSCAssemblyRevision Condition="'$(CSCAssemblyRevision)'==''">$(myAssemblyRevision)</CSCAssemblyRevision>
+
+      <ProjectVersion>$(CSCAssemblyMajorVersion).$(CSCAssemblyMinorVersion).$(CSCAssemblyBuildNumber).$(CSCAssemblyRevision)</ProjectVersion>
+    </PropertyGroup>
+
+    <Message Text="$(TestFiles)"/>
+    <Exec WorkingDirectory ="$(SolutionsPath)" ContinueOnError="true"
+          Command="$(SonarRunnerPath)\bin\sonar-runner.bat  -X -Dsonar.projectKey=Eagles:$(SonarApplicationName).key -Dsonar.projectVersion=$(ProjectVersion) -Dsonar.sources=$(SolutionsPath) -Dsonar.projectName=$(SonarApplicationName) -Dsonar.dotnet.buildConfigurations=$(Configuration) > $(DropsPath)\sonar.log" Condition="Exists($(TestFiles))"/>
+    <Exec WorkingDirectory ="$(SolutionsPath)" ContinueOnError="true"
+           Command="$(SonarRunnerPath)\bin\sonar-runner.bat  -X -Dsonar.projectKey=Eagles:$(SonarApplicationName).key -Dsonar.projectVersion=$(ProjectVersion) -Dsonar.sources=$(SolutionsPath) -Dsonar.projectName=$(SonarApplicationName) -Dsonar.dotnet.buildConfigurations=$(Configuration) -Dsonar.gallio.mode=skip> $(DropsPath)\sonar.log" Condition="!Exists($(TestFiles))"/>
+
+  </Target>
+
+
+</Project>

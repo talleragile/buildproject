@@ -1,0 +1,63 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <PropertyGroup>
+    <CompiledProjectOutPutPath>$(SolutionsPath)\$(ProjectToPublish)\bin\$(Configuration)\</CompiledProjectOutPutPath>
+  </PropertyGroup>
+
+  <Target Name="WinFilePublishContingency" AfterTargets="WinFilePublish" Condition=" '$(PublishDestinationPathContingency)'!='' And '$(ServiceServerNameContingency)'!=''">
+    <Message Text="Publishing in Contingency Location"/>
+
+    <Message Text="Publishing Win Application" />
+    <Message Text="Stopping $(ServiceName) in $(ServiceServerNameContingency)" />
+
+    <ServiceController MachineName="$(ServiceServerNameContingency)" ServiceName="$(ServiceName)" Action="Stop"/>
+
+    <Message Text="$(ServiceName) in $(ServiceServerNameContingency) Stopped " />
+
+    <Sleep Milliseconds="500"/>
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(PublishDestinationPathContingency)" Destination="$(PublishDestinationPath)" Files="*.*" Options="/MIR">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+    <Message Text="Starting $(ServiceName) in $(ServiceServerName)" />
+
+    <ServiceController MachineName="$(ServiceServerNameContingency)" ServiceName="$(ServiceName)" Action="Start"/>
+
+    <Message Text="$(ServiceName) in $(ServiceServerNameContingency) Started " />
+
+    <Sleep Milliseconds="100"/>
+
+  </Target>
+
+
+  <Target Name="WinFilePublish">
+    <Error Text="Publish Destination Path must be set"
+             Condition=" '$(PublishDestinationPath)'=='' And '$(ServiceServerName)'!=''" ContinueOnError="false"/>
+
+
+    <Message Text="Publishing Win Application" />
+    <Message Text="Stopping $(ServiceName) in $(ServiceServerName)" />
+
+    <ServiceController MachineName="$(ServiceServerName)" ServiceName="$(ServiceName)" Action="Stop"/>
+
+    <Message Text="$(ServiceName) in $(ServiceServerName) Stopped " />
+
+    <Sleep Milliseconds="500"/>
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(CompiledProjectOutPutPath)" Destination="$(PublishDestinationPath)" Files="*.*" Options="/MIR">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+      <Output TaskParameter="ReturnCode" PropertyName="Return" />
+    </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+
+    <Message Text="Starting $(ServiceName) in $(ServiceServerName)" />
+
+    <ServiceController MachineName="$(ServiceServerName)" ServiceName="$(ServiceName)" Action="Start"/>
+
+    <Message Text="$(ServiceName) in $(ServiceServerName) Started " />
+
+    <Sleep Milliseconds="100"/>
+
+  </Target>
+
+</Project>

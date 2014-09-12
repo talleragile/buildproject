@@ -1,0 +1,8 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <!-- Import Project Properties -->
+   <PropertyGroup>
+    <SonarToolsPath>$(MSBuildProjectDirectory)\Tools\sonar_runner</SonarToolsPath>
+  </PropertyGroup> 
+  
+  <Import Project="$(TargetsPath)\Sonar.target" />
+</Project>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <FilesToDelete Include="$(DropsPath)\**\*.*"
+                   Exclude="$(DropsPath)\sonar.log"/>
+  </ItemGroup>
+
+
+
+  <Target Name="CleanDropPathAfterFailedBuild">
+    <MSBuild.ExtensionPack.FileSystem.FindUnder TaskAction="FindDirectories" Path="$(DropsPath)" Recursive="False">
+      <Output ItemName="FoundFolders" TaskParameter="FoundItems" />
+    </MSBuild.ExtensionPack.FileSystem.FindUnder>
+
+    <Message Text="@(FoundFolders)" Importance="High"/>
+    <Delete Files="@(FilesToDelete)"/>
+    <RemoveDir Directories="@(FoundFolders)" />
+
+    <MakeDir Directories="$(DropsPath)\" Condition="!Exists($(DropsPath))"/>
+  </Target>
+
+
+</Project>

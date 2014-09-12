@@ -1,0 +1,13 @@
+﻿<Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+  <Import Project="$(MSBuildProjectDirectory)\Properties\General.props" />
+  <Import Project="$(ImportsPath)\Global.imports" />
+  
+
+  <Target Name="All"
+          DependsOnTargets="BeforeBuild;
+                PatchVersion;
+                BuildSolution" >
+
+  </Target>
+</Project>

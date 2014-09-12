@@ -1,0 +1,11 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <!-- Import Project Properties -->
+  <Import Project="$(TasksPath)\Community\MSBuild.Community.tasks" />
+  <Import Project="$(TasksPath)\ExtensionPack\MSBuild.ExtensionPack.tasks" />
+  <Import Project="$(TasksPath)\CSCExtensionPack\CSCExtensionPack.tasks" />
+  <Import Project="$(TargetsPath)\BeforeBuild.target" />
+  <Import Project="$(TargetsPath)\BuildSolution.target" />
+  <Import Project="$(TargetsPath)\PatchVersion.target" />
+  <Import Project="$(TargetsPath)\CleanDropPathAfterFailedBuild.target" />
+  <Import Project="$(TargetsPath)\Stagging.target" />
+</Project>

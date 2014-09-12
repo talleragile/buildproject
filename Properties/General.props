@@ -1,0 +1,14 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+
+  <PropertyGroup>
+    <SolutionsPath>$(MSBuildProjectDirectory)\..\$(ProjectPath)</SolutionsPath>
+    <TasksPath>$(MSBuildProjectDirectory)\Tasks</TasksPath>
+    <TargetsPath>$(MSBuildProjectDirectory)\Targets</TargetsPath>
+    <DropsPath>$(MSBuildProjectDirectory)\..\drops</DropsPath>
+    <MSBuildExe>%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild</MSBuildExe>
+    <ImportsPath>$(MSBuildProjectDirectory)\Imports</ImportsPath>
+    <PropertiesPath>$(MSBuildProjectDirectory)\Properties</PropertiesPath>
+    <CompiledProjectOutPutPath></CompiledProjectOutPutPath>
+  </PropertyGroup>  
+  
+</Project>
